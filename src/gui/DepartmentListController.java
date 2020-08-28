@@ -26,10 +26,10 @@ public class DepartmentListController implements Initializable {
 	private TableView<Department> tableViewDepartment;
 	
 	@FXML
-	private TableColumn<Department, Integer> tableColumnId;
+	private TableColumn<Department, Integer> tableColumnCodigo;
 	
 	@FXML
-	private TableColumn<Department, String> tableColumnName;
+	private TableColumn<Department, String> tableColumnNome;
 	
 	@FXML
 	private Button btNew;
@@ -47,8 +47,8 @@ public class DepartmentListController implements Initializable {
 	}
 
 	private void initializeNodes() {
-		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
-		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+		tableColumnCodigo.setCellValueFactory(new PropertyValueFactory<>("codigo")); // ATENÇÃO: Usado pelo ObservableList, pega exatamente o nome do campo do GETTER E SETTER da CLASSE
+		tableColumnNome.setCellValueFactory(new PropertyValueFactory<>("nome"));     // Pode ser minusculo ou maiusculo, no primeiro caracter 
 		
 		Stage stage = (Stage) Main.getMainsScene().getWindow(); 
 		tableViewDepartment.prefHeightProperty().bind(stage.heightProperty()); //relaciono a mudança do tamanho da table do Departament com o tamanho da tela Main.

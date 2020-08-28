@@ -8,39 +8,39 @@ public class Department implements Serializable { // O serializable permite que 
      */
     private static final long serialVersionUID = 1L;
     
-    private Integer id;
-    private String name;
+    private Integer codigo;
+    private String nome;
 
     public Department(){
 
     }
 
-    public Department(Integer id, String name) {
-        this.id = id;
-        this.name = name;
+    public Department(Integer codigo, String nome) {
+        this.codigo = codigo;
+        this.nome = nome;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer codigo) {
+        this.codigo = codigo;
     }
 
-    public String getName() {
-        return name;
+    public String getNome() {
+        return nome;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
         return result;
     }
 
@@ -53,17 +53,17 @@ public class Department implements Serializable { // O serializable permite que 
         if (getClass() != obj.getClass())
             return false;
         Department other = (Department) obj;
-        if (id == null) {
-            if (other.id != null)
+        if (codigo == null) {
+            if (other.codigo != null)
                 return false;
-        } else if (!id.equals(other.id))
+        } else if (!codigo.equals(other.codigo))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "Department [id=" + id + ", name=" + name + "]";
+        return "Department [codigo=\" + codigo + \", nome=" + nome + "]";
     }
     
 }
