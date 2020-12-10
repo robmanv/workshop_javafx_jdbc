@@ -3,7 +3,9 @@ package gui;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import db.DbException;
 import gui.listeners.DataChangeListener;
@@ -18,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Department;
+import model.exceptions.ValidationException;
 import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable {
@@ -76,6 +79,11 @@ public class DepartmentFormController implements Initializable {
 			notifyDataChangeListeners();  // serve pra emitir evento na mudança de dados para todos os objetos da lista (classe que EMITE O EVENTO)
 			utils.currentStage(event).close();
 		}
+		catch (ValidationException e) {
+			setErrorMessages(e.getErrors());  // vai pegar o meu throw exception do getFormData e usara o metodo getErrors pra trazer o Map com os erros adicionados nas validações do 
+			                                  // getFormData, e o setErrorMessages vai mover o texto pra label da tela
+			                                  // Toda classe personalizada pra tratar erros extende a runtimeException, pra poder dar um throw no erro e tratar de forma personalizada
+		}
 		catch (DbException e) {
 			Alerts.showAlert("Error saving object", null, e.getMessage(), AlertType.ERROR);
 		}
@@ -90,8 +98,18 @@ public class DepartmentFormController implements Initializable {
 	private Department getFormData() {          ///Pega os dados do formulário e retorna o objeto
 		Department obj = new Department();
 		
+		ValidationException exception = new ValidationException("Validation error");
+		
+		if (txtName.getText() == null || txtName.getText().trim().equals("")) {   /// o trim remove espaços em branco no inicio e fim 
+			exception.addError("name",  "Field can´t be empty");
+		}
+		
 		obj.setCodigo(utils.tryParseToInt(txtId.getText()));
 		obj.setNome(txtName.getText());
+		
+		if (exception.getErrors().size() > 0) {  // se adicionei algum erro no Map que está na classe ValidationException, vou lançar a exceção exception, que extende runtime exception 
+			throw exception;
+		}
 		
 		return obj;
 	}
@@ -121,5 +139,12 @@ public class DepartmentFormController implements Initializable {
 		txtName.setText(entity.getNome());
 	}
 
+	public void setErrorMessages(Map<String, String> errors) {
+		Set <String> fields = errors.keySet();  //pra varrer o Map, crio um vetor com as chaves de string.
+		
+		if (fields.contains("name")) {      // verifico se no keyset possui a chave "name", se houver eu formato o labelErrorName com a mensagem de erro do "name"
+			labelErrorName.setText(errors.get("name"));
+		}
+	}
 
 }
