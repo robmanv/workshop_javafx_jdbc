@@ -35,7 +35,7 @@ public class SellerDaoJDBC implements SellerDao {
                     + "VALUES (?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS);
 
-            st.setString(1, obj.getName());
+            st.setString(1, obj.getNome());
             st.setString(2, obj.getEmail());
             st.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
             st.setDouble(4, obj.getBaseSalary());
@@ -48,7 +48,7 @@ public class SellerDaoJDBC implements SellerDao {
 
                 if (rs.next()) {
                     int id = rs.getInt(1);
-                    obj.setId(id); // já deixo o obj populado com o id
+                    obj.setCodigo(id); // já deixo o obj populado com o id
                     DB.closeResultSet(rs);
                 }
                 else {
@@ -73,11 +73,11 @@ public class SellerDaoJDBC implements SellerDao {
                                         + "SET Name = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? "
                                         + "WHERE Id = ? ");
             
-            st.setString(1, obj.getName());
+            st.setString(1, obj.getNome());
             st.setDate(2, new java.sql.Date(obj.getBirthDate().getTime()));
             st.setDouble(3, obj.getBaseSalary());
             st.setInt(4, obj.getDepartment().getCodigo());
-            st.setInt(5, obj.getId());
+            st.setInt(5, obj.getCodigo());
 
             st.executeUpdate();
 

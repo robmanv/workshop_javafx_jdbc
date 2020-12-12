@@ -29,20 +29,20 @@ public class Seller implements Serializable {
         this.department = department;
     }
 
-    public Integer getId() {
+    public Integer getCodigo() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setCodigo(Integer id) {
         this.id = id;
     }
 
-    public String getName() {
+    public String getNome() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNome(String nome) {
+        this.name = nome;
     }
 
     public String getEmail() {
