@@ -1,6 +1,7 @@
 package gui;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -9,7 +10,7 @@ import application.Main;
 import db.DbIntegrityException;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
-import gui.util.utils;
+import gui.util.Utils;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -42,6 +43,15 @@ public class SellerListController implements Initializable, DataChangeListener {
 	private TableColumn<Seller, String> tableColumnNome;
 	
 	@FXML
+	private TableColumn<Seller, String> tableColumnEmail;
+	
+	@FXML
+	private TableColumn<Seller, Date> tableColumnBirthDate;
+	
+	@FXML
+	private TableColumn<Seller, Double> tableColumnBaseSalary;
+	
+	@FXML
 	private TableColumn<Seller, Seller> tableColumnEDIT;
 	
 	@FXML
@@ -53,7 +63,7 @@ public class SellerListController implements Initializable, DataChangeListener {
 	
 	@FXML 
 	private void onBtNewAction(ActionEvent event) {
-		Stage parentStage = utils.currentStage(event);
+		Stage parentStage = Utils.currentStage(event);
 		Seller obj = new Seller();
 		createDialogForm(obj, "/gui/SellerForm.fxml", parentStage);
 	}
@@ -67,6 +77,12 @@ public class SellerListController implements Initializable, DataChangeListener {
 	private void initializeNodes() {
 		tableColumnCodigo.setCellValueFactory(new PropertyValueFactory<>("codigo")); // ATENÇÃO: Usado pelo ObservableList, pega exatamente o nome do campo do GETTER E SETTER da CLASSE
 		tableColumnNome.setCellValueFactory(new PropertyValueFactory<>("nome"));     // Pode ser minusculo ou maiusculo, no primeiro caracter 
+		tableColumnEmail.setCellValueFactory(new PropertyValueFactory<>("email"));       // Exatamente o nome do atributo do SELLER
+		tableColumnBirthDate.setCellValueFactory(new PropertyValueFactory<>("birthDate"));  // Exatamente o nome do atributo do SELLER 
+		Utils.formatTableColumnDate(tableColumnBirthDate, "dd/MM/yyyy");
+		tableColumnBaseSalary.setCellValueFactory(new PropertyValueFactory<>("baseSalary"));   // Exatamente o nome do atributo do SELLER
+		Utils.formatTableColumnDouble(tableColumnBaseSalary, 2);
+		
 		
 		Stage stage = (Stage) Main.getMainsScene().getWindow(); 
 		tableViewSeller.prefHeightProperty().bind(stage.heightProperty()); //relaciono a mudança do tamanho da table do Departament com o tamanho da tela Main.
@@ -138,7 +154,7 @@ public class SellerListController implements Initializable, DataChangeListener {
 					setGraphic(button); // vai adicionar o botão "edit" no formulário de lista chamando a tela de atualização do department
 					button.setOnAction(
 							event -> createDialogForm(
-									obj, "/gui/SellerForm.fxml",utils.currentStage(event)));
+									obj, "/gui/SellerForm.fxml",Utils.currentStage(event)));
 				}
 			});
 	}

@@ -11,7 +11,7 @@ import db.DbException;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
-import gui.util.utils;
+import gui.util.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -77,7 +77,7 @@ public class DepartmentFormController implements Initializable {
 			entity = getFormData();
 			service.saveOrUpdate(entity);
 			notifyDataChangeListeners();  // serve pra emitir evento na mudança de dados para todos os objetos da lista (classe que EMITE O EVENTO)
-			utils.currentStage(event).close();
+			Utils.currentStage(event).close();
 		}
 		catch (ValidationException e) {
 			setErrorMessages(e.getErrors());  // vai pegar o meu throw exception do getFormData e usara o metodo getErrors pra trazer o Map com os erros adicionados nas validações do 
@@ -104,7 +104,7 @@ public class DepartmentFormController implements Initializable {
 			exception.addError("name",  "Field can´t be empty");
 		}
 		
-		obj.setCodigo(utils.tryParseToInt(txtId.getText()));
+		obj.setCodigo(Utils.tryParseToInt(txtId.getText()));
 		obj.setNome(txtName.getText());
 		
 		if (exception.getErrors().size() > 0) {  // se adicionei algum erro no Map que está na classe ValidationException, vou lançar a exceção exception, que extende runtime exception 
@@ -116,7 +116,7 @@ public class DepartmentFormController implements Initializable {
 
 	@FXML
 	public void onBtCancelAction(ActionEvent event) {
-		utils.currentStage(event).close();
+		Utils.currentStage(event).close();
 	}
 	
 	@Override

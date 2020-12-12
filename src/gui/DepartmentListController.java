@@ -10,7 +10,7 @@ import application.Main;
 import db.DbIntegrityException;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
-import gui.util.utils;
+import gui.util.Utils;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -58,7 +58,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	
 	@FXML 
 	private void onBtNewAction(ActionEvent event) {
-		Stage parentStage = utils.currentStage(event);
+		Stage parentStage = Utils.currentStage(event);
 		Department obj = new Department();
 		createDialogForm(obj, "/gui/DepartmentForm.fxml", parentStage);
 	}
@@ -143,7 +143,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 					setGraphic(button); // vai adicionar o botão "edit" no formulário de lista chamando a tela de atualização do department
 					button.setOnAction(
 							event -> createDialogForm(
-									obj, "/gui/DepartmentForm.fxml",utils.currentStage(event)));
+									obj, "/gui/DepartmentForm.fxml",Utils.currentStage(event)));
 				}
 			});
 	}
