@@ -3,9 +3,11 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import application.Main;
+import db.DbIntegrityException;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.utils;
@@ -19,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -44,10 +47,13 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	private TableColumn<Department, String> tableColumnNome;
 	
 	@FXML
-	private TableColumn<Department, Department> tableColumnsEDIT;
+	private TableColumn<Department, Department> tableColumnEDIT;
 	
 	@FXML
 	private Button btNew;
+	
+	@FXML
+	private TableColumn<Department, Department> tableColumnREMOVE;
 	
 	
 	@FXML 
@@ -86,6 +92,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		tableViewDepartment.setItems(obsList);
 		
 		initEditButtons(); // Isso vai adicionar um novo texto com botão edit, e sempre que clicar vai abrir o DepartmentFOrm.
+		initRemoveButtons(); // criar os botões de remove
 	}
 
 	private void createDialogForm(Department obj, String absoluteName, Stage parentStage) {
@@ -95,7 +102,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 			
 			DepartmentFormController controller = loader.getController(); // Pegar o controlador da tela que carregou, o formulário.
 			controller.setDepartment(obj); // injetar o objeto Department no meu controlador DepartmentFormController
-			controller.setDepartmentService(new DepartmentService());
+			controller.setDepartmentService(new DepartmentService()); // injetar a dependencia do DepartmentService (que tem o acesso ao BD, na classe controller)
 			controller.subscribeDataChangeListener(this); // Inscrevendo o objeto ATUAL DEPARTMENTLISTCONTROLLER para ficar no LISTENER (alto DESACOPLAMENTO)
 			controller.updateFormData();
 			
@@ -120,8 +127,8 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	
 	
 	private void initEditButtons() {
-			tableColumnsEDIT.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));  // estou definindo um valor inicial a partir do que está preenchido
-			tableColumnsEDIT.setCellFactory(param -> new TableCell<Department, Department>() {          // estou definindo o campo como um objeto Department, Department
+			tableColumnEDIT.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));  // estou definindo um valor inicial a partir do que está preenchido
+			tableColumnEDIT.setCellFactory(param -> new TableCell<Department, Department>() {          // estou definindo o campo como um objeto Department, Department
 				private final Button button = new Button("edit");
 				
 				@Override
@@ -140,6 +147,46 @@ public class DepartmentListController implements Initializable, DataChangeListen
 				}
 			});
 	}
+	
+
+	private void initRemoveButtons() {
+		tableColumnREMOVE.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));  // estou definindo um valor inicial a partir do que está preenchido
+		tableColumnREMOVE.setCellFactory(param -> new TableCell<Department, Department>() {          // estou definindo o campo como um objeto Department, Department
+			private final Button button = new Button("remove");
+			
+			@Override
+			protected void updateItem(Department obj, boolean empty) {
+				super.updateItem(obj, empty);
+				
+				if (obj == null) {
+					setGraphic(null);
+					return;
+				}
+				
+				setGraphic(button); // vai adicionar o botão "edit" no formulário de lista chamando a tela de atualização do department
+				button.setOnAction(
+						event -> removeEntity(obj));
+			}
+		});
+	}
+
+	private void removeEntity(Department obj) {
+		Optional<ButtonType> result = Alerts.showConfirmation("Confirmation", "Are you sure to delete?"); // o sim ou não vai pra variável resulta do Optional.
+		
+		if (result.get() == ButtonType.OK) {  // chama o objeto dentro do Optional, button
+			if (service == null) {
+				throw new IllegalStateException("Service was null");
+			}
+			
+			try {
+				service.remove(obj);
+				updateTableView();
+			} catch (DbIntegrityException e) {
+				Alerts.showAlert("Error removing object", null, e.getMessage(), AlertType.ERROR);
+			}
+		}
+	}
+	
 	
 
 }
