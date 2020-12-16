@@ -1,9 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -144,10 +146,31 @@ public class SellerFormController implements Initializable {
 		
 		obj.setCodigo(Utils.tryParseToInt(txtId.getText()));
 		obj.setNome(txtName.getText());
+
+		if (txtEmail.getText() == null || txtEmail.getText().trim().equals("")) {   /// o trim remove espaços em branco no inicio e fim 
+			exception.addError("email",  "Field can´t be empty");
+		}
+		
+		obj.setEmail(txtEmail.getText());
+		
+		if (dpBirthDate.getValue() == null) {
+			exception.addError("birthDate",  "Field can´t be empty");
+		} else {
+			Instant instant = Instant.from(dpBirthDate.getValue().atStartOfDay(ZoneId.systemDefault()));
+			obj.setBirthDate(Date.from(instant));
+		}
+		
+		if (txtBaseSalary.getText() == null || txtBaseSalary.getText().trim().equals("")) {   /// o trim remove espaços em branco no inicio e fim 
+			exception.addError("baseSalary",  "Field can´t be empty");
+		}
+		
+		obj.setBaseSalary(Utils.tryParseToDouble(txtBaseSalary.getText()));
 		
 		if (exception.getErrors().size() > 0) {  // se adicionei algum erro no Map que está na classe ValidationException, vou lançar a exceção exception, que extende runtime exception 
 			throw exception;
 		}
+		
+		obj.setDepartment(comboBoxDepartment.getValue());
 		
 		return obj;
 	}
@@ -191,6 +214,7 @@ public class SellerFormController implements Initializable {
 		} else {
 			comboBoxDepartment.setValue(entity.getDepartment());
 		}
+		
 	}
 
 	public void loadAssociatedObjects() {
@@ -208,8 +232,30 @@ public class SellerFormController implements Initializable {
 		
 		if (fields.contains("name")) {      // verifico se no keyset possui a chave "name", se houver eu formato o labelErrorName com a mensagem de erro do "name"
 			labelErrorName.setText(errors.get("name"));
+		} else {
+			labelErrorName.setText("");
 		}
-	}
+		
+		// labelErrorName.setText(fields.contains("name") ? errors.get("name") : ""); // dá pra trocar todo o if acima por essa linha
+		
+		if (fields.contains("email")) {      // verifico se no keyset possui a chave "name", se houver eu formato o labelErrorName com a mensagem de erro do "name"
+			labelErrorEmail.setText(errors.get("email"));
+		} else {
+			labelErrorEmail.setText("");
+		}
+		
+		if (fields.contains("baseSalary")) {      // verifico se no keyset possui a chave "name", se houver eu formato o labelErrorName com a mensagem de erro do "name"
+			labelErrorBaseSalary.setText(errors.get("baseSalary"));
+		} else {
+			labelErrorBaseSalary.setText("");
+		}
+
+		if (fields.contains("birthDate")) {      // verifico se no keyset possui a chave "name", se houver eu formato o labelErrorName com a mensagem de erro do "name"
+			labelErrorBirthDate.setText(errors.get("birthDate"));
+		} else {
+			labelErrorBirthDate.setText("");
+		}
+}
 	
 	private void initializeComboBoxDepartment() {
 		Callback<ListView<Department>, ListCell<Department>> factory = lv -> new ListCell<Department>() {
