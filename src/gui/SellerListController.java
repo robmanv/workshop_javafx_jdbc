@@ -31,6 +31,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
+import model.services.DepartmentService;
 import model.services.SellerService;
 
 public class SellerListController implements Initializable, DataChangeListener {
@@ -118,7 +119,8 @@ public class SellerListController implements Initializable, DataChangeListener {
 			
 			SellerFormController controller = loader.getController(); // Pegar o controlador da tela que carregou, o formulário.
 			controller.setSeller(obj); // injetar o objeto Seller no meu controlador SellerFormController
-			controller.setSellerService(new SellerService()); // injetar a dependencia do SellerService (que tem o acesso ao BD, na classe controller)
+			controller.setServices(new SellerService(), new DepartmentService()); // injetar a dependencia do SellerService (que tem o acesso ao BD, na classe controller)
+			controller.loadAssociatedObjects();
 			controller.subscribeDataChangeListener(this); // Inscrevendo o objeto ATUAL DEPARTMENTLISTCONTROLLER para ficar no LISTENER (alto DESACOPLAMENTO)
 			controller.updateFormData();
 			
@@ -131,6 +133,7 @@ public class SellerListController implements Initializable, DataChangeListener {
 			dialogStage.showAndWait();
 			
 		} catch (IOException e) {
+			e.printStackTrace();
 			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
 		}
 	}
